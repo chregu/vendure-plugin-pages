@@ -8,7 +8,7 @@ It's more of a proof of concept than an "out-of-the-box" solution (for now?). Bu
 
 Check out the code and move the code from the src folder and put it into a `src/plugins/pages` folder. Also add the `PagesPlugin` to your `src/vendure-config.ts` config.
 
-```
+```ts
 import { PagesPlugin } from './plugins/pages/pages-plugin'
 
 plugins: [
@@ -19,7 +19,7 @@ plugins: [
 
 Also add `PagesPlugin.ui` to the `extensions` in `compileUiExtensions` in the `AdminUiPlugin.init` section
 
-```
+```ts
 import { PagesPlugin } from './plugins/pages/pages-plugin'
 
 plugins: [
