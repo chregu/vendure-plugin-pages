@@ -11,27 +11,34 @@ Check out the code and move the code from the src folder and put it into a `src/
 ```ts
 import { PagesPlugin } from './plugins/pages/pages-plugin'
 
-plugins: [
-  PagesPlugin
-  ...
-]
+export const config: VendureConfig = {
+    //...
+    plugins: [
+      //...
+      PagesPlugin,
+    ]
+}
 ```
 
 Also add `PagesPlugin.ui` to the `extensions` in `compileUiExtensions` in the `AdminUiPlugin.init` section
 
 ```ts
 import { PagesPlugin } from './plugins/pages/pages-plugin'
-
-plugins: [
-  AdminUiPlugin.init({
-    port: 3002,
-    route: 'admin',
-    app: compileUiExtensions({
-      outputPath: path.join(__dirname, 'admin-ui'),
-      extensions: [PagesPlugin.ui],
-    }),
-  }),
-];
+//...
+export const config: VendureConfig = {
+    //...
+    plugins: [
+        //...
+        AdminUiPlugin.init({
+            port: 3002,
+            route: 'admin',
+            app: compileUiExtensions({
+                outputPath: path.join(__dirname, '../admin-ui'),
+                extensions: [PagesPlugin.ui],
+            }),
+        }),
+    ]
+}
 
 ```
 
