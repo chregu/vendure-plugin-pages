@@ -36,3 +36,18 @@ plugins: [
 ```
 
 And then generate some migrations for it. `yarn migration:generate pages` should do it for you (untested...)
+
+## Quering pages
+
+To get a page in your frontend, you can do a GraphQL request to the shop API like this
+
+```graphql
+query {
+  pageBySlug(slug:"uber-uns", languageCode:de) {
+    slug
+    text
+    title
+   
+  }
+}
+```
