@@ -1,0 +1,72 @@
+<vdr-action-bar>
+    <vdr-ab-left>
+        <div class="page-info">
+            <vdr-entity-info [entity]="entity$ | async"></vdr-entity-info>
+        </div>
+        <vdr-language-selector
+                [disabled]="isNew$ | async"
+                [availableLanguageCodes]="availableLanguages$ | async"
+                [currentLanguageCode]="languageCode$ | async"
+                (languageCodeChange)="setLanguage($event)"
+        ></vdr-language-selector>
+    </vdr-ab-left>
+    <vdr-ab-right>
+        <button
+                class="btn btn-primary"
+                *ngIf="isNew$ | async; else updateButton"
+                (click)="create()"
+                [disabled]="detailForm.invalid || detailForm.pristine"
+        >
+            {{ 'common.create' | translate }}
+        </button>
+        <ng-template #updateButton>
+            <button
+                    class="btn btn-primary"
+                    *vdrIfPermissions="updatePermission"
+                    (click)="save()"
+                    [disabled]="detailForm.invalid || detailForm.pristine"
+            >
+                {{ 'common.update' | translate }}
+            </button>
+        </ng-template>
+    </vdr-ab-right>
+</vdr-action-bar>
+<div class="clr-row">
+    <div class="clr-col">
+        <form class="form" [formGroup]="detailForm" *ngIf="entity$ | async as page">
+            <section class="form-block">
+                <vdr-form-field label="Title" for="title">
+                    <input
+                            id="title"
+                            type="text"
+                            formControlName="title"
+                            [readonly]="!('UpdateCatalog' | hasPermission)"
+                            (input)="updateCode(page.slug, $event.target.value)"
+
+                    />
+                </vdr-form-field>
+                <vdr-form-field label="Slug" for="slug">
+                    <input
+                            id="slug"
+                            type="text"
+                            formControlName="slug"
+                            [readonly]="!('UpdateCatalog' | hasPermission)"
+                    />
+
+                </vdr-form-field>
+
+
+                <vdr-rich-text-editor
+                        class="page-rich-text"
+
+                        formControlName="text"
+                        [readonly]="!(['UpdateCatalog', 'UpdateProduct'] | hasPermission)"
+                        [label]="'Body'"
+                ></vdr-rich-text-editor>
+
+
+            </section>
+        </form>
+    </div>
+
+</div>
