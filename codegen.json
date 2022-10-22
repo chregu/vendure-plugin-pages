@@ -1,0 +1,49 @@
+{
+  "overwrite": true,
+  "config": {
+    "strict": true,
+    "namingConvention": {
+      "typeNames": "pascalCase",
+      "enumValues": "keep"
+    },
+    "scalars": {
+      "ID": "string | number"
+    },
+    "maybeValue": "T"
+  },
+  "generates": {
+
+    "src/ui/generated/shop-types.ts": {
+      "schema": "http://localhost:3000/shop-api",
+      "plugins": [
+        {
+          "add": {
+            "content": "/* eslint-disable */"
+          }
+        },
+        "typescript",
+        "typescript-compatibility"
+      ]
+    },
+
+    "src/ui/generated/ui-types.ts": {
+      "schema": "http://localhost:3000/admin-api",
+      "documents": "src/ui/**/*.graphql.ts",
+      "plugins": [
+        {
+          "add": {
+            "content": "/* eslint-disable */"
+          }
+        },
+        "typescript",
+        "typescript-compatibility",
+        "typescript-operations"
+      ],
+      "config": {
+        "scalars": {
+          "ID": "string"
+        }
+      }
+    }
+  }
+}

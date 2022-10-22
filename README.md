@@ -58,3 +58,49 @@ query {
   }
 }
 ```
+
+
+
+## GraphQL Codegen
+
+This repository can automatically generate GraphQL types for use in the plugin code (see `src/e2e/plugin.e2e-spec.ts`).  To generate the types, ensure the development server is running, and use the command:
+
+```bash
+yarn dev:generate-types
+```
+
+## Linting
+
+This repository uses [eslint](https://eslint.org/) & [Prettier](https://prettier.io/) for finding and fixing common code issues and formatting your code in a standard way. To identify and fix issues, use the command:
+
+```bash
+yarn lint:fix
+```
+
+## Development Server
+
+A development server is configured in the `dev-server` folder, using [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) to spin up a Postgres database, as well as a server and worker.  This is used to test the plugin during development.
+
+To start the server, run:
+
+```bash
+yarn dev:run
+```
+
+To populate or reset the database, run the following command:
+
+```bash
+yarn dev:populate
+```
+
+To restart the server (only) after a change, use the following command:
+
+```bash
+yarn dev:restart
+```
+
+Note: The Docker containers must be rebuilt when updating dependencies.  Use the following command:
+
+```bash
+yarn dev:rebuild
+```
