@@ -4,9 +4,10 @@ A simple plugin to manage "static" (or CMS) pages for your frontend.
 
 You can create/edit such pages in the vendure backend with multi-lingual pages.
 
-It's more of a proof of concept than an "out-of-the-box" solution (for now?). But will maybe help others in getting up to speed.
+It's more of a proof of concept than an "out-of-the-box" solution (for now, at least, I don't plan to publish it as npm package, but the skeleton would be here). 
+But will others help others in getting up to speed.
 
-Check out the code and move the code from the src folder and put it into a `src/plugins/pages` folder. Also add the `PagesPlugin` to your `src/vendure-config.ts` config.
+To use: get the code and move the code from the src folder and put it into a `src/plugins/pages` folder. Also add the `PagesPlugin` to your `src/vendure-config.ts` config.
 
 ```ts
 import { PagesPlugin } from './plugins/pages/pages-plugin'
