@@ -1,22 +1,24 @@
 import { Args, Query, Resolver } from '@nestjs/graphql'
-import { Ctx, ListQueryBuilder, RequestContext, TransactionalConnection } from '@vendure/core'
+import { Ctx, RelationPaths, Relations, RequestContext } from '@vendure/core'
 import { QueryPageArgs } from '../ui/generated/ui-types'
 import { Page } from '../entities/page.entity'
 import { QueryPageBySlugArgs } from '../ui/generated/shop-types'
-import { PageTranslation } from '../entities/page-translation.entity'
+import { PagesService } from '../service/pages.service'
 
 @Resolver()
 export class PagesShopResolver {
-    constructor(private connection: TransactionalConnection, private listQueryBuilder: ListQueryBuilder) {}
+    constructor(private pagesService: PagesService) {}
 
     @Query()
-    async page(@Ctx() ctx: RequestContext, @Args() args: QueryPageArgs) {
-        return this.connection.getRepository(ctx, Page).findOne(args.id, {})
+    async page(
+        @Ctx() ctx: RequestContext,
+        @Args() args: QueryPageArgs,
+        @Relations(Page) relations: RelationPaths<Page>,
+    ) {
+        return this.pagesService.findOne(ctx, args.id, relations)
     }
     @Query()
     async pageBySlug(@Ctx() ctx: RequestContext, @Args() args: QueryPageBySlugArgs) {
-        return this.connection.getRepository(ctx, PageTranslation).findOne({
-            where: { languageCode: args.languageCode, slug: args.slug },
-        })
+        return this.pagesService.findBySlugAndLanguage(ctx, args.slug, args.languageCode)
     }
 }

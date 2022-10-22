@@ -1,18 +1,13 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import {
     Allow,
-    assertFound,
     Ctx,
-    ListQueryBuilder,
     Permission,
     RelationPaths,
     Relations,
     RequestContext,
     Transaction,
-    TransactionalConnection,
-    TranslatableSaver,
     Translated,
-    TranslatorService,
 } from '@vendure/core'
 import {
     MutationCreatePageArgs,
@@ -22,17 +17,12 @@ import {
     MutationDeletePageArgs,
 } from '../ui/generated/ui-types'
 import { Page } from '../entities/page.entity'
-import { ID, PaginatedList } from '@vendure/common/lib/shared-types'
-import { PageTranslation } from '../entities/page-translation.entity'
+import { PaginatedList } from '@vendure/common/lib/shared-types'
+import { PagesService } from '../service/pages.service'
 
 @Resolver()
 export class PagesAdminResolver {
-    constructor(
-        private connection: TransactionalConnection,
-        private listQueryBuilder: ListQueryBuilder,
-        private translator: TranslatorService,
-        private translatableSaver: TranslatableSaver,
-    ) {}
+    constructor(private pagesService: PagesService) {}
 
     @Query()
     @Allow(Permission.ReadCatalog)
@@ -41,20 +31,7 @@ export class PagesAdminResolver {
         @Args() args: QueryPagesArgs,
         @Relations(Page) relations: RelationPaths<Page>,
     ): Promise<PaginatedList<Translated<Page>>> {
-        const foo = this.listQueryBuilder
-            .build(Page, args.options || undefined, {
-                ctx,
-                relations,
-            })
-            .getManyAndCount()
-            .then(([pages, totalItems]) => {
-                const items = pages.map(item => this.translator.translate(item, ctx))
-                return {
-                    items,
-                    totalItems,
-                }
-            })
-        return foo
+        return this.pagesService.findAll(ctx, args.options, relations)
     }
 
     @Query()
@@ -63,54 +40,27 @@ export class PagesAdminResolver {
         @Args() args: QueryPageArgs,
         @Relations(Page) relations: RelationPaths<Page>,
     ) {
-        return this.connection
-            .getRepository(ctx, Page)
-            .findOne(args.id, { relations })
-            .then(page => page && this.translator.translate(page, ctx))
+        return this.pagesService.findOne(ctx, args.id, relations)
     }
 
     @Transaction()
     @Mutation()
     @Allow(Permission.UpdateCatalog)
     async updatePage(@Ctx() ctx: RequestContext, @Args() { input }: MutationUpdatePageArgs) {
-        const page = await this.translatableSaver.update({
-            ctx,
-            input,
-            entityType: Page,
-            translationType: PageTranslation,
-        })
-
-        return assertFound(this.findOne(ctx, page.id))
+        return this.pagesService.update(ctx, input)
     }
 
     @Transaction()
     @Mutation()
     @Allow(Permission.CreateCatalog)
     async createPage(@Ctx() ctx: RequestContext, @Args() { input }: MutationCreatePageArgs) {
-        const page = await this.translatableSaver.create({
-            ctx,
-            input,
-            entityType: Page,
-            translationType: PageTranslation,
-        })
-        return assertFound(this.findOne(ctx, page.id))
+        return this.pagesService.create(ctx, input)
     }
+
     @Transaction()
     @Mutation()
     @Allow(Permission.DeleteCatalog)
     async deletePage(@Ctx() ctx: RequestContext, @Args() { input }: MutationDeletePageArgs): Promise<boolean> {
-        const result = await this.connection.getRepository(ctx, Page).delete({ id: input.id })
-        return !!(result?.affected && result?.affected > 0)
-    }
-
-    findOne(
-        ctx: RequestContext,
-        pageId: ID,
-        relations: RelationPaths<Page> = [],
-    ): Promise<Translated<Page> | undefined> {
-        return this.connection
-            .getRepository(ctx, Page)
-            .findOne(pageId, { relations })
-            .then(page => page && this.translator.translate(page, ctx))
+        return this.pagesService.delete(ctx, input.id)
     }
 }

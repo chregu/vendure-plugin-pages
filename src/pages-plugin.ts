@@ -6,6 +6,7 @@ import { adminApiExtensions, shopApiExtensions } from './api/api-extensions'
 import { PagesAdminResolver } from './api/pages-admin.resolver'
 import { PagesShopResolver } from './api/pages-shop.resolver'
 import { PageTranslation } from './entities/page-translation.entity'
+import { PagesService } from './service/pages.service'
 
 @VendurePlugin({
     imports: [PluginCommonModule],
@@ -19,6 +20,7 @@ import { PageTranslation } from './entities/page-translation.entity'
         schema: adminApiExtensions,
         resolvers: [PagesAdminResolver],
     },
+    providers: [PagesService],
 })
 export class PagesPlugin {
     static ui: AdminUiExtension = {
