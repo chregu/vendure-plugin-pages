@@ -10,10 +10,12 @@ import {
 } from '@vendure/admin-ui/core'
 import { DELETE_PAGE, GET_PAGES } from './page-list.graphql'
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker'
-import { switchMap, tap } from 'rxjs/operators'
 import { EMPTY, Observable } from 'rxjs'
 import Page = GetPage.Page
 import { LanguageCode } from '@vendure/core'
+import { FormControl } from '@angular/forms'
+import { LogicalOperator } from '../generated/shop-types'
+import { debounceTime, filter, takeUntil, switchMap, tap } from 'rxjs/operators'
 
 @Component({
     selector: 'pages',
@@ -24,6 +26,8 @@ export class PageListComponent
     extends BaseListComponent<GetPages.Query, GetPages.Items, GetPages.Variables>
     implements OnInit, OnDestroy
 {
+    searchTerm = new FormControl('')
+
     availableLanguages$: Observable<LanguageCode[]>
     contentLanguage$: Observable<LanguageCode>
 
@@ -46,6 +50,18 @@ export class PageListComponent
                     options: {
                         skip,
                         take,
+                        filter: {
+                            section: {
+                                contains: this.searchTerm.value,
+                            },
+                            slug: {
+                                contains: this.searchTerm.value,
+                            },
+                            title: {
+                                contains: this.searchTerm.value,
+                            },
+                        },
+                        filterOperator: LogicalOperator.OR,
                         sort: {
                             createdAt: SortOrder.DESC,
                         },
@@ -60,6 +76,14 @@ export class PageListComponent
             .uiState()
             .mapStream(({ uiState }) => uiState.contentLanguage)
             .pipe(tap(() => this.refresh()))
+        this.searchTerm.valueChanges
+            .pipe(
+                filter(value => 2 < value.length || value.length === 0),
+                debounceTime(250),
+                takeUntil(this.destroy$),
+            )
+            .subscribe(() => this.refresh())
+
         this.availableLanguages$ = this.serverConfigService.getAvailableLanguages()
     }
     ngOnDestroy() {

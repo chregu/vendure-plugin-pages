@@ -1,5 +1,12 @@
 <vdr-action-bar>
     <vdr-ab-left>
+        <input
+                type="text"
+                name="searchTerm"
+                [formControl]="searchTerm"
+                [placeholder]="'Search pages'"
+                class="search-input"
+        />
         <vdr-language-selector
                 [availableLanguageCodes]="availableLanguages$ | async"
                 [currentLanguageCode]="contentLanguage$ | async"
