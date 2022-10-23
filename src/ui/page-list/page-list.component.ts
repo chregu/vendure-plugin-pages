@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { DeletePage, GetPage, GetPages, SortOrder } from '../generated/ui-types'
+import { DeletePage, GetPage, GetPages, PageFilterParameter, SortOrder } from '../generated/ui-types'
 import {
     BaseListComponent,
     DataService,
@@ -10,23 +10,33 @@ import {
 } from '@vendure/admin-ui/core'
 import { DELETE_PAGE, GET_PAGES } from './page-list.graphql'
 import { marker as _ } from '@biesbjerg/ngx-translate-extract-marker'
-import { EMPTY, Observable } from 'rxjs'
+import { EMPTY, Observable, merge } from 'rxjs'
+import { debounceTime, takeUntil, switchMap, tap } from 'rxjs/operators'
 import Page = GetPage.Page
 import { LanguageCode } from '@vendure/core'
-import { FormControl } from '@angular/forms'
+import { FormControl, FormGroup } from '@angular/forms'
 import { LogicalOperator } from '../generated/shop-types'
-import { debounceTime, filter, takeUntil, switchMap, tap } from 'rxjs/operators'
-
+export type PageSearchForm = {
+    name: string
+    section: string
+    slug: string
+}
 @Component({
     selector: 'pages',
     templateUrl: './page-list.component.html',
+    styleUrls: ['./page-list.component.scss'],
+
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageListComponent
     extends BaseListComponent<GetPages.Query, GetPages.Items, GetPages.Variables>
     implements OnInit, OnDestroy
 {
-    searchTerm = new FormControl('')
+    searchForm = new FormGroup({
+        name: new FormControl(''),
+        section: new FormControl(''),
+        slug: new FormControl(''),
+    })
 
     availableLanguages$: Observable<LanguageCode[]>
     contentLanguage$: Observable<LanguageCode>
@@ -40,34 +50,13 @@ export class PageListComponent
         private serverConfigService: ServerConfigService,
     ) {
         super(router, route)
+
         super.setQueryFn(
             (...args: any[]) => {
                 return this.dataService.query(GET_PAGES, args)
             },
             data => data.pages,
-            (skip, take) => {
-                return {
-                    options: {
-                        skip,
-                        take,
-                        filter: {
-                            section: {
-                                contains: this.searchTerm.value,
-                            },
-                            slug: {
-                                contains: this.searchTerm.value,
-                            },
-                            title: {
-                                contains: this.searchTerm.value,
-                            },
-                        },
-                        filterOperator: LogicalOperator.OR,
-                        sort: {
-                            createdAt: SortOrder.DESC,
-                        },
-                    },
-                }
-            },
+            (skip, take) => this.createQueryOptions(skip, take, this.searchForm.value),
         )
     }
     ngOnInit() {
@@ -76,13 +65,15 @@ export class PageListComponent
             .uiState()
             .mapStream(({ uiState }) => uiState.contentLanguage)
             .pipe(tap(() => this.refresh()))
-        this.searchTerm.valueChanges
-            .pipe(
-                filter(value => 2 < value.length || value.length === 0),
-                debounceTime(250),
-                takeUntil(this.destroy$),
-            )
-            .subscribe(() => this.refresh())
+
+        merge(this.searchForm.valueChanges.pipe(debounceTime(250)), this.route.queryParamMap)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(val => {
+                if (!val.params) {
+                    this.setPageNumber(1)
+                }
+                this.refresh()
+            })
 
         this.availableLanguages$ = this.serverConfigService.getAvailableLanguages()
     }
@@ -130,5 +121,35 @@ export class PageListComponent
                     })
                 },
             )
+    }
+
+    private createQueryOptions(skip: number, take: number, searchForm: PageSearchForm) {
+        const filter: PageFilterParameter = {}
+        if (searchForm.section) {
+            filter.section = {
+                contains: searchForm.section,
+            }
+        }
+        if (searchForm.name) {
+            filter.title = {
+                contains: searchForm.name,
+            }
+        }
+        if (searchForm.slug) {
+            filter.slug = {
+                contains: searchForm.slug,
+            }
+        }
+        return {
+            options: {
+                skip,
+                take,
+                filter,
+                filterOperator: LogicalOperator.AND,
+                sort: {
+                    createdAt: SortOrder.DESC,
+                },
+            },
+        }
     }
 }

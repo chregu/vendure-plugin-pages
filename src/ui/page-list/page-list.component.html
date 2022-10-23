@@ -1,12 +1,26 @@
 <vdr-action-bar>
     <vdr-ab-left>
-        <input
-                type="text"
-                name="searchTerm"
-                [formControl]="searchTerm"
-                [placeholder]="'Search pages'"
-                class="search-input"
-        />
+        <form class="search-form" [formGroup]="searchForm">
+            <input
+                    type="text"
+                    formControlName="name"
+                    placeholder="Search by title"
+                    class="search-input"
+            />
+            <input
+                    type="text"
+                    formControlName="slug"
+                    placeholder="Search by slug"
+                    class="search-input"
+            />
+            <input
+                    type="text"
+                    formControlName="section"
+
+                    placeholder="Search by section"
+                    class="search-input"
+            />
+        </form>
         <vdr-language-selector
                 [availableLanguageCodes]="availableLanguages$ | async"
                 [currentLanguageCode]="contentLanguage$ | async"
