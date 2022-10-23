@@ -7,6 +7,7 @@ import { PagesAdminResolver } from './api/pages-admin.resolver'
 import { PagesShopResolver } from './api/pages-shop.resolver'
 import { PageTranslation } from './entities/page-translation.entity'
 import { PagesService } from './service/pages.service'
+import { PageResolver } from './api/page.resolver'
 
 @VendurePlugin({
     imports: [PluginCommonModule],
@@ -14,11 +15,11 @@ import { PagesService } from './service/pages.service'
     entities: [Page, PageTranslation],
     shopApiExtensions: {
         schema: shopApiExtensions,
-        resolvers: [PagesShopResolver],
+        resolvers: [PagesShopResolver, PageResolver],
     },
     adminApiExtensions: {
         schema: adminApiExtensions,
-        resolvers: [PagesAdminResolver],
+        resolvers: [PagesAdminResolver, PageResolver],
     },
     providers: [PagesService],
 })

@@ -15,7 +15,6 @@ export class PageDetailResolver extends BaseEntityResolver<Page.Fragment> {
                 id: '',
                 createdAt: '',
                 updatedAt: '',
-
                 translations: [],
             },
             id =>

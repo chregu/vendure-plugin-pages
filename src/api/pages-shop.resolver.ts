@@ -2,7 +2,7 @@ import { Args, Query, Resolver } from '@nestjs/graphql'
 import { Ctx, RelationPaths, Relations, RequestContext } from '@vendure/core'
 import { QueryPageArgs } from '../ui/generated/ui-types'
 import { Page } from '../entities/page.entity'
-import { QueryPageBySlugArgs } from '../ui/generated/shop-types'
+import { QueryPageBySlugArgs, QueryPagesBySectionArgs } from '../ui/generated/shop-types'
 import { PagesService } from '../service/pages.service'
 
 @Resolver()
@@ -20,5 +20,14 @@ export class PagesShopResolver {
     @Query()
     async pageBySlug(@Ctx() ctx: RequestContext, @Args() args: QueryPageBySlugArgs) {
         return this.pagesService.findBySlugAndLanguage(ctx, args.slug, args.languageCode)
+    }
+
+    @Query()
+    async pagesBySection(
+        @Ctx() ctx: RequestContext,
+        @Args() args: QueryPagesBySectionArgs,
+        @Relations(Page) relations: RelationPaths<Page>,
+    ) {
+        return this.pagesService.findBySection(ctx, args.section, args.options, relations)
     }
 }

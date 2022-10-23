@@ -15,6 +15,7 @@ import {
 import { CreatePageInput, PageListOptions, UpdatePageInput } from '../ui/generated/ui-types'
 import { Page } from '../entities/page.entity'
 import { PageTranslation } from '../entities/page-translation.entity'
+import { SelectQueryBuilder } from 'typeorm'
 
 @Injectable()
 export class PagesService {
@@ -30,19 +31,10 @@ export class PagesService {
         options?: PageListOptions,
         relations?: RelationPaths<Page>,
     ): Promise<PaginatedList<Translated<Page>>> {
-        return this.listQueryBuilder
-            .build(Page, options || undefined, {
-                ctx,
-                relations,
-            })
-            .getManyAndCount()
-            .then(([pages, totalItems]) => {
-                const items = pages.map(item => this.translator.translate(item, ctx))
-                return {
-                    items,
-                    totalItems,
-                }
-            })
+        const qb = this.getQueryBuilder(options, ctx, relations)
+            .orderBy('page.section', 'ASC')
+            .addOrderBy('page.sortorder', 'ASC')
+        return this.getTranslatedQueryBuilderResponse(qb, ctx)
     }
 
     async findOne(
@@ -64,6 +56,12 @@ export class PagesService {
         return this.connection.getRepository(ctx, PageTranslation).findOne({
             where: { languageCode: languageCode, slug: slug },
         })
+    }
+
+    findBySection(ctx: RequestContext, section: string, options?: PageListOptions, relations?: RelationPaths<Page>) {
+        const qb = this.getQueryBuilder(options, ctx, relations)
+        qb.where({ section: section }).orderBy('page.sortorder', 'ASC')
+        return this.getTranslatedQueryBuilderResponse(qb, ctx)
     }
 
     async create(ctx: RequestContext, input: CreatePageInput): Promise<Page> {
@@ -90,5 +88,25 @@ export class PagesService {
     async delete(ctx: RequestContext, id: string | number): Promise<boolean> {
         const result = await this.connection.getRepository(ctx, Page).delete({ id })
         return !!(result?.affected && result?.affected > 0)
+    }
+
+    private getQueryBuilder(
+        options: PageListOptions | undefined,
+        ctx: RequestContext,
+        relations?: RelationPaths<Page>,
+    ) {
+        return this.listQueryBuilder.build(Page, options || undefined, {
+            ctx,
+            relations,
+        })
+    }
+    private getTranslatedQueryBuilderResponse(qb: SelectQueryBuilder<Page>, ctx: RequestContext) {
+        return qb.getManyAndCount().then(([pages, totalItems]) => {
+            const items = pages.map(item => this.translator.translate(item, ctx))
+            return {
+                items,
+                totalItems,
+            }
+        })
     }
 }

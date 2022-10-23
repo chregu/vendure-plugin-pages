@@ -5,11 +5,12 @@ export const commonApiExtensions = gql`
         id: ID!
         createdAt: DateTime!
         updatedAt: DateTime!
-        name: String
         text: String
         title: String
         slug: String
-        translations: [PageTranslation!]!
+        sortorder: String
+        section: String
+        translations(languageCode: LanguageCode): [PageTranslation!]!
     }
 
     type PageTranslation {
@@ -17,7 +18,6 @@ export const commonApiExtensions = gql`
         createdAt: DateTime!
         updatedAt: DateTime!
         languageCode: LanguageCode!
-        name: String!
         text: String!
         title: String!
         slug: String!
@@ -43,10 +43,14 @@ export const adminApiExtensions = gql`
     }
     input UpdatePageInput {
         id: ID!
+        section: String
+        sortorder: Int
         translations: [PageTranslationInput!]
     }
 
     input CreatePageInput {
+        section: String
+        sortorder: Int
         translations: [PageTranslationInput!]
     }
 
@@ -68,8 +72,10 @@ export const adminApiExtensions = gql`
 
 export const shopApiExtensions = gql`
     ${commonApiExtensions}
+
     extend type Query {
         page(id: ID!): Page
         pageBySlug(slug: String!, languageCode: LanguageCode!): Page
+        pagesBySection(section: String!): PageList!
     }
 `

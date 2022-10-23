@@ -4992,11 +4992,17 @@ export type Page = Node & {
   id: Scalars['ID'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
-  name?: Maybe<Scalars['String']>;
   text?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   slug?: Maybe<Scalars['String']>;
+  sortorder?: Maybe<Scalars['String']>;
+  section?: Maybe<Scalars['String']>;
   translations: Array<PageTranslation>;
+};
+
+
+export type PageTranslationsArgs = {
+  languageCode?: Maybe<LanguageCode>;
 };
 
 export type PageTranslation = {
@@ -5005,7 +5011,6 @@ export type PageTranslation = {
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   languageCode: LanguageCode;
-  name: Scalars['String'];
   text: Scalars['String'];
   title: Scalars['String'];
   slug: Scalars['String'];
@@ -5040,10 +5045,14 @@ export type PageTranslationInput = {
 
 export type UpdatePageInput = {
   id: Scalars['ID'];
+  section?: Maybe<Scalars['String']>;
+  sortorder?: Maybe<Scalars['Int']>;
   translations?: Maybe<Array<PageTranslationInput>>;
 };
 
 export type CreatePageInput = {
+  section?: Maybe<Scalars['String']>;
+  sortorder?: Maybe<Scalars['Int']>;
   translations?: Maybe<Array<PageTranslationInput>>;
 };
 
@@ -5374,20 +5383,22 @@ export type PageFilterParameter = {
   id?: Maybe<IDOperators>;
   createdAt?: Maybe<DateOperators>;
   updatedAt?: Maybe<DateOperators>;
-  name?: Maybe<StringOperators>;
   text?: Maybe<StringOperators>;
   title?: Maybe<StringOperators>;
   slug?: Maybe<StringOperators>;
+  sortorder?: Maybe<StringOperators>;
+  section?: Maybe<StringOperators>;
 };
 
 export type PageSortParameter = {
   id?: Maybe<SortOrder>;
   createdAt?: Maybe<SortOrder>;
   updatedAt?: Maybe<SortOrder>;
-  name?: Maybe<SortOrder>;
   text?: Maybe<SortOrder>;
   title?: Maybe<SortOrder>;
   slug?: Maybe<SortOrder>;
+  sortorder?: Maybe<SortOrder>;
+  section?: Maybe<SortOrder>;
 };
 
 export type HistoryEntryFilterParameter = {
@@ -5475,7 +5486,7 @@ export namespace GetPage {
 
 export type PageFragment = (
   { __typename?: 'Page' }
-  & Pick<Page, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'slug'>
+  & Pick<Page, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'slug' | 'section' | 'sortorder'>
   & { translations: Array<(
     { __typename?: 'PageTranslation' }
     & Pick<PageTranslation, 'id' | 'slug' | 'text' | 'languageCode' | 'title'>

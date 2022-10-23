@@ -1,14 +1,16 @@
 <vdr-action-bar>
     <vdr-ab-left>
-        <div class="page-info">
+        <div class="page-info form">
             <vdr-entity-info [entity]="entity$ | async"></vdr-entity-info>
-        </div>
+
+
         <vdr-language-selector
                 [disabled]="isNew$ | async"
                 [availableLanguageCodes]="availableLanguages$ | async"
                 [currentLanguageCode]="languageCode$ | async"
                 (languageCodeChange)="setLanguage($event)"
         ></vdr-language-selector>
+        </div>
     </vdr-ab-left>
     <vdr-ab-right>
         <button
@@ -54,7 +56,26 @@
                     />
 
                 </vdr-form-field>
+                <vdr-form-field label="Section" for="section" tooltip="Applies to all languages" >
+                    <input
+                            id="section"
+                            type="text"
+                            formControlName="section"
+                            [readonly]="!('UpdateCatalog' | hasPermission)"
+                    />
+                </vdr-form-field>
+                    <vdr-form-field label="Section sort order" for="sortorder" tooltip="Order within a section. Applies to all languages"
+                                    [errors]="{ pattern: 'Sort order is invalid. Needs to be a number' }"
 
+                    >
+                        <input
+                                id="sortorder"
+                                type="text"
+                                formControlName="sortorder"
+                                [readonly]="!('UpdateCatalog' | hasPermission)"
+                        />
+
+                </vdr-form-field>
 
                 <vdr-rich-text-editor
                         class="page-rich-text"

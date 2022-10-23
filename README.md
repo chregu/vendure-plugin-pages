@@ -45,13 +45,25 @@ export const config: VendureConfig = {
 
 And then generate some migrations for it. `yarn migration:generate pages` should do it for you (untested...)
 
-## Quering pages
+## Querying pages
 
 To get a page in your frontend, you can do a GraphQL request to the shop API like this
 
 ```graphql
 query {
   pageBySlug(slug:"uber-uns", languageCode:de) {
+    slug
+    text
+    title
+   
+  }
+}
+
+```
+To get all pages for a section (make sure, the endpoint uses the correct languageCode parameter, eg: `https://localhost:3000/shop-api?languageCode=de)
+``` 
+query {
+  pagesBySection(section:"footer") {
     slug
     text
     title

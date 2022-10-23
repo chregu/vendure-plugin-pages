@@ -7,6 +7,8 @@ export const PAGE_FRAGMENT = gql`
         updatedAt
         title
         slug
+        section
+        sortorder
         translations {
             id
             slug

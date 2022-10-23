@@ -7,7 +7,7 @@ import { SharedModule, addNavMenuSection } from '@vendure/admin-ui/core'
         addNavMenuSection(
             {
                 id: 'Pages',
-                label: 'CMS',
+                label: 'Oomnium',
                 items: [
                     {
                         id: 'Pages',

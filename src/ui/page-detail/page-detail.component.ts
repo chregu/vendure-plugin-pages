@@ -40,6 +40,8 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
             slug: ['', Validators.required],
             text: ['', Validators.required],
             title: ['', Validators.required],
+            section: [''],
+            sortorder: ['', Validators.pattern(/^[0-9]+$/)],
         })
     }
 
@@ -57,6 +59,8 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
             slug: currentTranslation ? currentTranslation.slug : '',
             text: currentTranslation ? currentTranslation.text : '',
             title: currentTranslation ? currentTranslation.title : '',
+            section: entity.section,
+            sortorder: entity.sortorder || 1,
         })
     }
 
@@ -83,7 +87,11 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
                     })
                     return this.dataService
                         .mutate<UpdatePage.Mutation, UpdatePage.Variables>(UPDATE_PAGE, {
-                            input: pick(input, ['id', 'translations']),
+                            input: {
+                                ...pick(input, ['id', 'translations']),
+                                sortorder: parseInt(formValue.sortorder) || 1,
+                                section: formValue.section,
+                            },
                         })
                         .pipe(mapTo(true))
                 }),
@@ -137,9 +145,12 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
                             languageCode,
                         },
                     })
-                    console.log(input)
                     return this.dataService.mutate<CreatePage.Mutation, CreatePage.Variables>(CREATE_PAGE, {
-                        input: pick(input, ['translations']),
+                        input: {
+                            ...pick(input, ['translations']),
+                            sortorder: parseInt(formValue.sortorder) || 1,
+                            section: formValue.section,
+                        },
                     })
                 }),
             )

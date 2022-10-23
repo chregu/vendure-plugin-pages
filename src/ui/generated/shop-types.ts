@@ -68,6 +68,7 @@ export type Query = {
   search: SearchResponse;
   page?: Maybe<Page>;
   pageBySlug?: Maybe<Page>;
+  pagesBySection: PageList;
 };
 
 
@@ -126,6 +127,12 @@ export type QueryPageArgs = {
 export type QueryPageBySlugArgs = {
   slug: Scalars['String'];
   languageCode: LanguageCode;
+};
+
+
+export type QueryPagesBySectionArgs = {
+  section: Scalars['String'];
+  options?: Maybe<PageListOptions>;
 };
 
 export type Mutation = {
@@ -2882,6 +2889,41 @@ export type NoActiveOrderError = ErrorResult & {
   message: Scalars['String'];
 };
 
+export type PageListOptions = {
+  /** Skips the first n results, for use in pagination */
+  skip?: Maybe<Scalars['Int']>;
+  /** Takes n results, for use in pagination */
+  take?: Maybe<Scalars['Int']>;
+  /** Specifies which properties to sort the results by */
+  sort?: Maybe<PageSortParameter>;
+  /** Allows the results to be filtered */
+  filter?: Maybe<PageFilterParameter>;
+  /** Specifies whether multiple "filter" arguments should be combines with a logical AND or OR operation. Defaults to AND. */
+  filterOperator?: Maybe<LogicalOperator>;
+};
+
+export type PageSortParameter = {
+  id?: Maybe<SortOrder>;
+  createdAt?: Maybe<SortOrder>;
+  updatedAt?: Maybe<SortOrder>;
+  text?: Maybe<SortOrder>;
+  title?: Maybe<SortOrder>;
+  slug?: Maybe<SortOrder>;
+  sortorder?: Maybe<SortOrder>;
+  section?: Maybe<SortOrder>;
+};
+
+export type PageFilterParameter = {
+  id?: Maybe<IDOperators>;
+  createdAt?: Maybe<DateOperators>;
+  updatedAt?: Maybe<DateOperators>;
+  text?: Maybe<StringOperators>;
+  title?: Maybe<StringOperators>;
+  slug?: Maybe<StringOperators>;
+  sortorder?: Maybe<StringOperators>;
+  section?: Maybe<StringOperators>;
+};
+
 export type AuthenticationInput = {
   native?: Maybe<NativeAuthInput>;
 };
@@ -3025,11 +3067,17 @@ export type Page = Node & {
   id: Scalars['ID'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
-  name?: Maybe<Scalars['String']>;
   text?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   slug?: Maybe<Scalars['String']>;
+  sortorder?: Maybe<Scalars['String']>;
+  section?: Maybe<Scalars['String']>;
   translations: Array<PageTranslation>;
+};
+
+
+export type PageTranslationsArgs = {
+  languageCode?: Maybe<LanguageCode>;
 };
 
 export type PageTranslation = {
@@ -3038,7 +3086,6 @@ export type PageTranslation = {
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   languageCode: LanguageCode;
-  name: Scalars['String'];
   text: Scalars['String'];
   title: Scalars['String'];
   slug: Scalars['String'];
