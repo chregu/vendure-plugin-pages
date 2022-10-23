@@ -1,8 +1,6 @@
 # vendure-plugin-pages
 
-A simple plugin to manage "static" (or CMS) pages for your frontend.
-
-You can create/edit such pages in the vendure backend with multi-lingual pages.
+A [vendure.io](https://vendure.io) plugin for creating/editing multi-lingual html pages to be used by your front end. Not a CMS, but may save you from needing one.
 
 It's more of a proof of concept than an "out-of-the-box" solution (for now, at least, I don't plan to publish it as npm package, but the skeleton would be here). 
 But will others help others in getting up to speed.

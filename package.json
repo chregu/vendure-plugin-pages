@@ -1,7 +1,7 @@
 {
   "name": "vendure-plugin-pages",
   "version": "0.0.1",
-  "description": "A Vendure plugin template",
+  "description": "Vendure plugin for creating/editing multi-lingual html pages to be used by your front end. Not a CMS, but may save you from needing one.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
