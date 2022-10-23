@@ -1,14 +1,9 @@
-import {
-    DefaultJobQueuePlugin,
-    DefaultSearchPlugin,
-    dummyPaymentHandler,
-    VendureConfig,
-} from '@vendure/core';
-import { AssetServerPlugin } from '@vendure/asset-server-plugin';
-import { AdminUiPlugin } from '@vendure/admin-ui-plugin';
-import path from 'path';
-import { PagesPlugin } from '../src/pages-plugin';
-import { compileUiExtensions } from '@vendure/ui-devkit/compiler';
+import { DefaultJobQueuePlugin, DefaultSearchPlugin, dummyPaymentHandler, VendureConfig } from '@vendure/core'
+import { AssetServerPlugin } from '@vendure/asset-server-plugin'
+import { AdminUiPlugin } from '@vendure/admin-ui-plugin'
+import path from 'path'
+import { PagesPlugin } from '../src/pages-plugin'
+import { compileUiExtensions } from '@vendure/ui-devkit/compiler'
 
 export const headlessConfig: VendureConfig = {
     apiOptions: {
@@ -39,7 +34,7 @@ export const headlessConfig: VendureConfig = {
     },
     dbConnectionOptions: {
         type: 'postgres',
-        synchronize: false, // turn this off for production
+        synchronize: true, // turn this off for production
         logging: false,
         database: 'vendure',
         host: process.env.DATABASE_HOST || 'localhost',
@@ -61,7 +56,7 @@ export const headlessConfig: VendureConfig = {
         DefaultSearchPlugin,
         PagesPlugin,
     ],
-};
+}
 
 export const config: VendureConfig = {
     ...headlessConfig,
@@ -77,4 +72,4 @@ export const config: VendureConfig = {
             }),
         }),
     ],
-};
+}

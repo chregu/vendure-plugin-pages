@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core'
 import { SharedModule, addNavMenuSection } from '@vendure/admin-ui/core'
+import { Permission } from './generated/ui-types'
 
 @NgModule({
     imports: [SharedModule],
@@ -8,6 +9,7 @@ import { SharedModule, addNavMenuSection } from '@vendure/admin-ui/core'
             {
                 id: 'Pages',
                 label: 'Content',
+                requiresPermission: Permission.ReadPages,
                 items: [
                     {
                         id: 'Pages',
@@ -15,6 +17,7 @@ import { SharedModule, addNavMenuSection } from '@vendure/admin-ui/core'
                         routerLink: ['/extensions/pages'],
                         // Icon can be any of https://clarity.design/icons
                         icon: 'book',
+                        requiresPermission: Permission.ReadPages,
                     },
                 ],
             },

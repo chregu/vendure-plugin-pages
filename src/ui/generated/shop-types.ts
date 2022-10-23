@@ -2499,7 +2499,15 @@ export enum Permission {
   /** Grants permission to update Zone */
   UpdateZone = 'UpdateZone',
   /** Grants permission to delete Zone */
-  DeleteZone = 'DeleteZone'
+  DeleteZone = 'DeleteZone',
+  /** Grants permission to create Pages */
+  CreatePages = 'CreatePages',
+  /** Grants permission to read Pages */
+  ReadPages = 'ReadPages',
+  /** Grants permission to update Pages */
+  UpdatePages = 'UpdatePages',
+  /** Grants permission to delete Pages */
+  DeletePages = 'DeletePages'
 }
 
 /** The price range where the result has more than one price */

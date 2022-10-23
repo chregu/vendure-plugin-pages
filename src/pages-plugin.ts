@@ -8,6 +8,7 @@ import { PagesShopResolver } from './api/pages-shop.resolver'
 import { PageTranslation } from './entities/page-translation.entity'
 import { PagesService } from './service/pages.service'
 import { PageResolver } from './api/page.resolver'
+import { PagesPermission } from './pages-permission'
 
 @VendurePlugin({
     imports: [PluginCommonModule],
@@ -22,6 +23,10 @@ import { PageResolver } from './api/page.resolver'
         resolvers: [PagesAdminResolver, PageResolver],
     },
     providers: [PagesService],
+    configuration: config => {
+        config.authOptions.customPermissions.push(PagesPermission)
+        return config
+    },
 })
 export class PagesPlugin {
     static ui: AdminUiExtension = {
