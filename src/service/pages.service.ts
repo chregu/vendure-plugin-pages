@@ -60,7 +60,11 @@ export class PagesService {
 
     findBySection(ctx: RequestContext, section: string, options?: PageListOptions, relations?: RelationPaths<Page>) {
         const qb = this.getQueryBuilder(options, ctx, relations)
-        qb.where({ section: section }).orderBy('page.position', 'ASC')
+        qb.where(
+            section.split(',').map(s => ({
+                section: s,
+            })),
+        ).orderBy('page.position', 'ASC')
         return this.getTranslatedQueryBuilderResponse(qb, ctx)
     }
 

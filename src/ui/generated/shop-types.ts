@@ -2779,7 +2779,12 @@ export type Query = {
   /** Search Products based on the criteria set by the `SearchInput` */
   search: SearchResponse;
   page?: Maybe<Page>;
+  /** Return a page by its slug. languageCode is needed, independent of the general languageCode setting */
   pageBySlug?: Maybe<Page>;
+  /**
+   * Returns all pages matching a sectio ordered by their position.
+   * Separate by comma for multiple sections.
+   */
   pagesBySection: PageList;
 };
 
