@@ -13,7 +13,7 @@ export class Page extends VendureEntity implements Translatable {
     section: string
 
     @Column({ default: 1, type: 'int' })
-    sortorder: string
+    position: string
 
     @OneToMany(() => PageTranslation, translation => translation.base, { eager: true })
     translations: Array<Translation<Page>>

@@ -64,14 +64,14 @@
                             [readonly]="!('UpdateCatalog' | hasPermission)"
                     />
                 </vdr-form-field>
-                    <vdr-form-field label="Section sort order" for="sortorder" tooltip="Order within a section. Applies to all languages"
-                                    [errors]="{ pattern: 'Sort order is invalid. Needs to be a number' }"
+                    <vdr-form-field label="Section position" for="position" tooltip="Order within a section. Applies to all languages"
+                                    [errors]="{ pattern: 'Sort position is invalid. Needs to be a number' }"
 
                     >
                         <input
-                                id="sortorder"
+                                id="position"
                                 type="text"
-                                formControlName="sortorder"
+                                formControlName="position"
                                 [readonly]="!('UpdateCatalog' | hasPermission)"
                         />
 

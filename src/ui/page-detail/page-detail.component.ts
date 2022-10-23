@@ -41,7 +41,7 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
             text: ['', Validators.required],
             title: ['', Validators.required],
             section: [''],
-            sortorder: ['', Validators.pattern(/^[0-9]+$/)],
+            position: ['', Validators.pattern(/^[0-9]+$/)],
         })
     }
 
@@ -60,7 +60,7 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
             text: currentTranslation ? currentTranslation.text : '',
             title: currentTranslation ? currentTranslation.title : '',
             section: entity.section,
-            sortorder: entity.sortorder || 1,
+            position: entity.position || 1,
         })
     }
 
@@ -89,7 +89,7 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
                         .mutate<UpdatePage.Mutation, UpdatePage.Variables>(UPDATE_PAGE, {
                             input: {
                                 ...pick(input, ['id', 'translations']),
-                                sortorder: parseInt(formValue.sortorder) || 1,
+                                position: parseInt(formValue.position) || 1,
                                 section: formValue.section,
                             },
                         })
@@ -148,7 +148,7 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
                     return this.dataService.mutate<CreatePage.Mutation, CreatePage.Variables>(CREATE_PAGE, {
                         input: {
                             ...pick(input, ['translations']),
-                            sortorder: parseInt(formValue.sortorder) || 1,
+                            position: parseInt(formValue.position) || 1,
                             section: formValue.section,
                         },
                     })

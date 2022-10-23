@@ -33,7 +33,7 @@ export class PagesService {
     ): Promise<PaginatedList<Translated<Page>>> {
         const qb = this.getQueryBuilder(options, ctx, relations)
             .orderBy('page.section', 'ASC')
-            .addOrderBy('page.sortorder', 'ASC')
+            .addOrderBy('page.position', 'ASC')
         return this.getTranslatedQueryBuilderResponse(qb, ctx)
     }
 
@@ -60,7 +60,7 @@ export class PagesService {
 
     findBySection(ctx: RequestContext, section: string, options?: PageListOptions, relations?: RelationPaths<Page>) {
         const qb = this.getQueryBuilder(options, ctx, relations)
-        qb.where({ section: section }).orderBy('page.sortorder', 'ASC')
+        qb.where({ section: section }).orderBy('page.position', 'ASC')
         return this.getTranslatedQueryBuilderResponse(qb, ctx)
     }
 

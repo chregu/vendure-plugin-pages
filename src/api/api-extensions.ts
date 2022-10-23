@@ -8,7 +8,7 @@ export const commonApiExtensions = gql`
         text: String
         title: String
         slug: String
-        sortorder: String
+        position: String
         section: String
         translations(languageCode: LanguageCode): [PageTranslation!]!
     }
@@ -44,13 +44,13 @@ export const adminApiExtensions = gql`
     input UpdatePageInput {
         id: ID!
         section: String
-        sortorder: Int
+        position: Int
         translations: [PageTranslationInput!]
     }
 
     input CreatePageInput {
         section: String
-        sortorder: Int
+        position: Int
         translations: [PageTranslationInput!]
     }
 
