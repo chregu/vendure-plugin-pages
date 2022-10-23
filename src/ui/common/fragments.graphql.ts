@@ -9,6 +9,7 @@ export const PAGE_FRAGMENT = gql`
         slug
         section
         position
+        enabled
         translations {
             id
             slug

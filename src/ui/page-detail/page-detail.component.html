@@ -1,16 +1,31 @@
 <vdr-action-bar>
     <vdr-ab-left>
-        <div class="page-info form">
+        <div class="flex clr-flex-row">
             <vdr-entity-info [entity]="entity$ | async"></vdr-entity-info>
 
+            <clr-toggle-wrapper *vdrIfPermissions="['UpdatePages']">
+                <input
+                        type="checkbox"
+                        clrToggle
+                        name="enabled"
+                        [formControl]="detailForm.get( 'enabled')"
+                />
+                <label>{{ 'common.enabled' | translate }}
+                    <vdr-help-tooltip
+                            class="mr3"
 
+                            [content]="'If disabled, will not be included when searching for sections (but still when searching for the slug)'"
+                    ></vdr-help-tooltip>
+                </label>
+            </clr-toggle-wrapper>
+        </div>
         <vdr-language-selector
                 [disabled]="isNew$ | async"
                 [availableLanguageCodes]="availableLanguages$ | async"
                 [currentLanguageCode]="languageCode$ | async"
                 (languageCodeChange)="setLanguage($event)"
         ></vdr-language-selector>
-        </div>
+
     </vdr-ab-left>
     <vdr-ab-right>
         <button

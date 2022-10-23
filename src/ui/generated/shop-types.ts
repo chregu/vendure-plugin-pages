@@ -2130,6 +2130,7 @@ export type Page = Node & {
   slug?: Maybe<Scalars['String']>;
   position?: Maybe<Scalars['String']>;
   section?: Maybe<Scalars['String']>;
+  enabled?: Maybe<Scalars['Boolean']>;
   translations: Array<PageTranslation>;
 };
 
@@ -2147,6 +2148,7 @@ export type PageFilterParameter = {
   slug?: Maybe<StringOperators>;
   position?: Maybe<StringOperators>;
   section?: Maybe<StringOperators>;
+  enabled?: Maybe<BooleanOperators>;
 };
 
 export type PageList = PaginatedList & {
@@ -2790,8 +2792,9 @@ export type Query = {
   /** Return a page by its slug. languageCode is needed, independent of the general languageCode setting */
   pageBySlug?: Maybe<Page>;
   /**
-   * Returns all pages matching a sectio ordered by their position.
+   * Returns all pages matching a section ordered by their position.
    * Separate by comma for multiple sections.
+   * Won't return disabled pages.
    */
   pagesBySection: PageList;
 };

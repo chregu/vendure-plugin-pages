@@ -10,6 +10,7 @@ export const commonApiExtensions = gql`
         slug: String
         position: String
         section: String
+        enabled: Boolean
         translations(languageCode: LanguageCode): [PageTranslation!]!
     }
 
@@ -45,12 +46,14 @@ export const adminApiExtensions = gql`
         id: ID!
         section: String
         position: Int
+        enabled: Boolean
         translations: [PageTranslationInput!]
     }
 
     input CreatePageInput {
         section: String
         position: Int
+        enabled: Boolean
         translations: [PageTranslationInput!]
     }
 
@@ -80,8 +83,9 @@ export const shopApiExtensions = gql`
         """
         pageBySlug(slug: String!, languageCode: LanguageCode!): Page
         """
-        Returns all pages matching a sectio ordered by their position.
+        Returns all pages matching a section ordered by their position.
         Separate by comma for multiple sections.
+        Won't return disabled pages.
         """
         pagesBySection(section: String!): PageList!
     }

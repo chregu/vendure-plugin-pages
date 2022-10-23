@@ -717,6 +717,7 @@ export type CreateGroupOptionInput = {
 export type CreatePageInput = {
   section?: Maybe<Scalars['String']>;
   position?: Maybe<Scalars['Int']>;
+  enabled?: Maybe<Scalars['Boolean']>;
   translations?: Maybe<Array<PageTranslationInput>>;
 };
 
@@ -3475,6 +3476,7 @@ export type Page = Node & {
   slug?: Maybe<Scalars['String']>;
   position?: Maybe<Scalars['String']>;
   section?: Maybe<Scalars['String']>;
+  enabled?: Maybe<Scalars['Boolean']>;
   translations: Array<PageTranslation>;
 };
 
@@ -3492,6 +3494,7 @@ export type PageFilterParameter = {
   slug?: Maybe<StringOperators>;
   position?: Maybe<StringOperators>;
   section?: Maybe<StringOperators>;
+  enabled?: Maybe<BooleanOperators>;
 };
 
 export type PageList = PaginatedList & {
@@ -5318,6 +5321,7 @@ export type UpdatePageInput = {
   id: Scalars['ID'];
   section?: Maybe<Scalars['String']>;
   position?: Maybe<Scalars['Int']>;
+  enabled?: Maybe<Scalars['Boolean']>;
   translations?: Maybe<Array<PageTranslationInput>>;
 };
 
@@ -5496,7 +5500,7 @@ export namespace GetPage {
 
 export type PageFragment = (
   { __typename?: 'Page' }
-  & Pick<Page, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'slug' | 'section' | 'position'>
+  & Pick<Page, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'slug' | 'section' | 'position' | 'enabled'>
   & { translations: Array<(
     { __typename?: 'PageTranslation' }
     & Pick<PageTranslation, 'id' | 'slug' | 'text' | 'languageCode' | 'title'>

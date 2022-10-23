@@ -15,6 +15,9 @@ export class Page extends VendureEntity implements Translatable {
     @Column({ default: 1, type: 'int' })
     position: string
 
+    @Column({ default: false })
+    enabled: boolean
+
     @OneToMany(() => PageTranslation, translation => translation.base, { eager: true })
     translations: Array<Translation<Page>>
 }

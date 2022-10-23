@@ -77,6 +77,7 @@ export class PageListComponent
 
         this.availableLanguages$ = this.serverConfigService.getAvailableLanguages()
     }
+
     ngOnDestroy() {
         this.destroy$.next(undefined)
         this.destroy$.complete()

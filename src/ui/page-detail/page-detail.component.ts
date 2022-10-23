@@ -37,6 +37,7 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
     ) {
         super(route, router, serverConfigService, dataService)
         this.detailForm = this.formBuilder.group({
+            enabled: false,
             slug: ['', Validators.required],
             text: ['', Validators.required],
             title: ['', Validators.required],
@@ -60,6 +61,7 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
             text: currentTranslation ? currentTranslation.text : '',
             title: currentTranslation ? currentTranslation.title : '',
             section: entity.section,
+            enabled: entity.enabled,
             position: entity.position || 1,
         })
     }
@@ -91,6 +93,7 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
                                 ...pick(input, ['id', 'translations']),
                                 position: parseInt(formValue.position) || 1,
                                 section: formValue.section,
+                                enabled: formValue.enabled,
                             },
                         })
                         .pipe(mapTo(true))
@@ -150,6 +153,7 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
                             ...pick(input, ['translations']),
                             position: parseInt(formValue.position) || 1,
                             section: formValue.section,
+                            enabled: formValue.enabled,
                         },
                     })
                 }),
