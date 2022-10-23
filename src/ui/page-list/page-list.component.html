@@ -30,8 +30,8 @@
 
     </vdr-ab-left>
     <vdr-ab-right>
-        <vdr-action-bar-items locationId="country-list"></vdr-action-bar-items>
-        <a class="btn btn-primary" [routerLink]="['./create']" *vdrIfPermissions="['CreateSettings', 'CreateCountry']">
+        <vdr-action-bar-items locationId="pages-list"></vdr-action-bar-items>
+        <a class="btn btn-primary" [routerLink]="['./create']" *vdrIfPermissions="['CreatePages']">
             <clr-icon shape="plus"></clr-icon>
             Create new Page
         </a>
@@ -76,7 +76,7 @@
                             class="delete-button"
                             (click)="deletePage(page)"
                             vdrDropdownItem
-                            [disabled]="!(['DeleteCatalog'] | hasPermission)"
+                            [disabled]="!(['DeletePages'] | hasPermission)"
                     >
                         <clr-icon shape="trash" class="is-danger"></clr-icon>
                         {{ 'common.delete' | translate }}

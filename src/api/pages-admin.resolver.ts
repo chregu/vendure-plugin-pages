@@ -27,6 +27,7 @@ export class PagesAdminResolver {
     }
 
     @Query()
+    @Allow(PagesPermission.Read)
     async page(
         @Ctx() ctx: RequestContext,
         @Args() args: QueryPageArgs,

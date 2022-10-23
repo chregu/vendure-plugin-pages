@@ -24,7 +24,7 @@
         <ng-template #updateButton>
             <button
                     class="btn btn-primary"
-                    *vdrIfPermissions="updatePermission"
+                    *vdrIfPermissions="'UpdatePages'"
                     (click)="save()"
                     [disabled]="detailForm.invalid || detailForm.pristine"
             >
@@ -42,7 +42,7 @@
                             id="title"
                             type="text"
                             formControlName="title"
-                            [readonly]="!('UpdateCatalog' | hasPermission)"
+                            [readonly]="!('UpdatePages' | hasPermission)"
                             (input)="updateCode(page.slug, $event.target.value)"
 
                     />
@@ -52,7 +52,7 @@
                             id="slug"
                             type="text"
                             formControlName="slug"
-                            [readonly]="!('UpdateCatalog' | hasPermission)"
+                            [readonly]="!('UpdatePages' | hasPermission)"
                     />
 
                 </vdr-form-field>
@@ -61,7 +61,7 @@
                             id="section"
                             type="text"
                             formControlName="section"
-                            [readonly]="!('UpdateCatalog' | hasPermission)"
+                            [readonly]="!('UpdatePages' | hasPermission)"
                     />
                 </vdr-form-field>
                     <vdr-form-field label="Section position" for="position" tooltip="Order within a section. Applies to all languages"
@@ -72,7 +72,7 @@
                                 id="position"
                                 type="text"
                                 formControlName="position"
-                                [readonly]="!('UpdateCatalog' | hasPermission)"
+                                [readonly]="!('UpdatePages' | hasPermission)"
                         />
 
                 </vdr-form-field>
@@ -81,7 +81,7 @@
                         class="page-rich-text"
 
                         formControlName="text"
-                        [readonly]="!(['UpdateCatalog', 'UpdateProduct'] | hasPermission)"
+                        [readonly]="!(['UpdatePages'] | hasPermission)"
                         [label]="'Body'"
                 ></vdr-rich-text-editor>
 
