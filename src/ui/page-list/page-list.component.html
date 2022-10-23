@@ -1,31 +1,33 @@
 <vdr-action-bar>
     <vdr-ab-left>
-        <form class="search-form" [formGroup]="searchForm">
-            <input
-                    type="text"
-                    formControlName="name"
-                    placeholder="Search by title"
-                    class="search-input"
-            />
-            <input
-                    type="text"
-                    formControlName="slug"
-                    placeholder="Search by slug"
-                    class="search-input"
-            />
-            <input
-                    type="text"
-                    formControlName="section"
+        <div class="flex start wrap">
+            <vdr-language-selector
+                    [availableLanguageCodes]="availableLanguages$ | async"
+                    [currentLanguageCode]="contentLanguage$ | async"
+                    (languageCodeChange)="setLanguage($event)"
+            ></vdr-language-selector>
+            <form class="search-form" [formGroup]="searchForm">
+                <input
+                        type="text"
+                        formControlName="name"
+                        placeholder="Search by title"
+                        class="clr-input search-input ml4"
+                />
+                <input
+                        type="text"
+                        formControlName="slug"
+                        placeholder="Search by slug"
+                        class="clr-input search-input ml4"
+                />
+                <input
+                        type="text"
+                        formControlName="section"
+                        placeholder="Search by section"
+                        class="clr-input search-input ml4"
+                />
+            </form>
+        </div>
 
-                    placeholder="Search by section"
-                    class="search-input"
-            />
-        </form>
-        <vdr-language-selector
-                [availableLanguageCodes]="availableLanguages$ | async"
-                [currentLanguageCode]="contentLanguage$ | async"
-                (languageCodeChange)="setLanguage($event)"
-        ></vdr-language-selector>
     </vdr-ab-left>
     <vdr-ab-right>
         <vdr-action-bar-items locationId="country-list"></vdr-action-bar-items>
