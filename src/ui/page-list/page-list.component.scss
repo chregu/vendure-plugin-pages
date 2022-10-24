@@ -10,3 +10,17 @@
 vdr-select-toggle {
   justify-content: start;
 }
+
+pages-tag-selector {
+  margin: 0 8px 6px 0;
+  width: 200px;
+
+}
+
+::ng-deep {
+  .ng-select.ng-select-single > .ng-select-container {
+    // something is strange, this does not really help
+    padding-top: 0
+  }
+}
+

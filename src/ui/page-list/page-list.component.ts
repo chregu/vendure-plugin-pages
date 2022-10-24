@@ -124,13 +124,8 @@ export class PageListComponent
             )
     }
 
-    private createQueryOptions(skip: number, take: number, searchForm: PageSearchForm) {
+    private createQueryOptions(skip: number, take: number, searchForm: PageSearchForm): GetPages.Variables {
         const filter: PageFilterParameter = {}
-        if (searchForm.section) {
-            filter.section = {
-                contains: searchForm.section,
-            }
-        }
         if (searchForm.name) {
             filter.title = {
                 contains: searchForm.name,
@@ -141,16 +136,23 @@ export class PageListComponent
                 contains: searchForm.slug,
             }
         }
-        return {
+        const response: GetPages.Variables = {
             options: {
                 skip,
                 take,
                 filter,
                 filterOperator: LogicalOperator.AND,
                 sort: {
-                    createdAt: SortOrder.DESC,
+                    position: SortOrder.DESC,
                 },
             },
         }
+
+        if (searchForm.section) {
+            response.sections = [searchForm.section]
+        } else {
+            response.sections = []
+        }
+        return response
     }
 }

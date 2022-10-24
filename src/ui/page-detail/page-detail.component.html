@@ -71,24 +71,32 @@
                     />
 
                 </vdr-form-field>
-                <vdr-form-field label="Section" for="section" tooltip="Applies to all languages" >
+
+                <vdr-form-field  label="Sections" tooltip="Applies to all languages" for="sections">
+
+                    <ng-container *ngIf="('UpdatePages' | hasPermission)">
+                        <pages-tag-selector formControlName="sections" ></pages-tag-selector>
+
+                    </ng-container>
+                    <div *ngIf="!('UpdatePages' | hasPermission)">
+                        <vdr-chip *ngFor="let section of page.sections" [colorFrom]="section.value" >
+                            <clr-icon shape="tag" class="mr2"></clr-icon>
+                            {{ section.value }}</vdr-chip
+                        >
+                    </div>
+                </vdr-form-field>
+
+                <vdr-form-field label="Section position" for="position"
+                                tooltip="Order within a section. Applies to all languages"
+                                [errors]="{ pattern: 'Sort position is invalid. Needs to be a number' }"
+
+                >
                     <input
-                            id="section"
+                            id="position"
                             type="text"
-                            formControlName="section"
+                            formControlName="position"
                             [readonly]="!('UpdatePages' | hasPermission)"
                     />
-                </vdr-form-field>
-                    <vdr-form-field label="Section position" for="position" tooltip="Order within a section. Applies to all languages"
-                                    [errors]="{ pattern: 'Sort position is invalid. Needs to be a number' }"
-
-                    >
-                        <input
-                                id="position"
-                                type="text"
-                                formControlName="position"
-                                [readonly]="!('UpdatePages' | hasPermission)"
-                        />
 
                 </vdr-form-field>
 

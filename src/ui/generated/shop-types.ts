@@ -2129,7 +2129,7 @@ export type Page = Node & {
   title?: Maybe<Scalars['String']>;
   slug?: Maybe<Scalars['String']>;
   position?: Maybe<Scalars['String']>;
-  section?: Maybe<Scalars['String']>;
+  sections?: Maybe<Array<PageSection>>;
   enabled?: Maybe<Scalars['Boolean']>;
   translations: Array<PageTranslation>;
 };
@@ -2147,7 +2147,6 @@ export type PageFilterParameter = {
   title?: Maybe<StringOperators>;
   slug?: Maybe<StringOperators>;
   position?: Maybe<StringOperators>;
-  section?: Maybe<StringOperators>;
   enabled?: Maybe<BooleanOperators>;
 };
 
@@ -2170,6 +2169,11 @@ export type PageListOptions = {
   filterOperator?: Maybe<LogicalOperator>;
 };
 
+export type PageSection = {
+  __typename?: 'PageSection';
+  value: Scalars['String'];
+};
+
 export type PageSortParameter = {
   id?: Maybe<SortOrder>;
   createdAt?: Maybe<SortOrder>;
@@ -2178,7 +2182,6 @@ export type PageSortParameter = {
   title?: Maybe<SortOrder>;
   slug?: Maybe<SortOrder>;
   position?: Maybe<SortOrder>;
-  section?: Maybe<SortOrder>;
 };
 
 export type PageTranslation = {
@@ -2859,7 +2862,7 @@ export type QueryPageBySlugArgs = {
 
 
 export type QueryPagesBySectionArgs = {
-  section: Scalars['String'];
+  sections?: Maybe<Array<Scalars['String']>>;
   options?: Maybe<PageListOptions>;
 };
 

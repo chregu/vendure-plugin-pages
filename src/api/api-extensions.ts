@@ -9,7 +9,7 @@ export const commonApiExtensions = gql`
         title: String
         slug: String
         position: String
-        section: String
+        sections: [PageSection!]
         enabled: Boolean
         translations(languageCode: LanguageCode): [PageTranslation!]!
     }
@@ -22,6 +22,10 @@ export const commonApiExtensions = gql`
         text: String!
         title: String!
         slug: String!
+    }
+
+    type PageSection {
+        value: String!
     }
 
     type PageList implements PaginatedList {
@@ -42,18 +46,20 @@ export const adminApiExtensions = gql`
         slug: String!
         title: String!
     }
+
     input UpdatePageInput {
         id: ID!
-        section: String
+        sections: [String!]
         position: Int
         enabled: Boolean
         translations: [PageTranslationInput!]
     }
 
     input CreatePageInput {
-        section: String
         position: Int
         enabled: Boolean
+        sections: [String!]
+
         translations: [PageTranslationInput!]
     }
 
@@ -61,15 +67,33 @@ export const adminApiExtensions = gql`
         id: ID!
     }
 
+    input DeleteSectionInput {
+        id: ID!
+    }
+
+    type Section implements Node {
+        id: ID!
+        value: String!
+    }
+
+    type SectionList implements PaginatedList {
+        items: [Section!]!
+        totalItems: Int!
+    }
+
+    input SectionListOptions
+
     extend type Query {
-        pages(options: PageListOptions): PageList!
+        pages(options: PageListOptions, sections: [String!]): PageList!
         page(id: ID!): Page
+        sections(options: SectionListOptions): SectionList!
     }
 
     extend type Mutation {
         updatePage(input: UpdatePageInput!): Page!
         createPage(input: CreatePageInput!): Page!
         deletePage(input: DeletePageInput!): Boolean
+        deleteSection(input: DeleteSectionInput!): Boolean
     }
 `
 
@@ -87,6 +111,6 @@ export const shopApiExtensions = gql`
         Separate by comma for multiple sections.
         Won't return disabled pages.
         """
-        pagesBySection(section: String!): PageList!
+        pagesBySection(sections: [String!]): PageList!
     }
 `

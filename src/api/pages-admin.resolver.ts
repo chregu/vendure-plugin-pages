@@ -6,11 +6,13 @@ import {
     QueryPageArgs,
     QueryPagesArgs,
     MutationDeletePageArgs,
+    QuerySectionsArgs,
 } from '../ui/generated/ui-types'
 import { Page } from '../entities/page.entity'
 import { PaginatedList } from '@vendure/common/lib/shared-types'
 import { PagesService } from '../service/pages.service'
 import { PagesPermission } from '../pages-permission'
+import { PageSection } from '../entities/page-section.entity'
 
 @Resolver()
 export class PagesAdminResolver {
@@ -23,7 +25,7 @@ export class PagesAdminResolver {
         @Args() args: QueryPagesArgs,
         @Relations(Page) relations: RelationPaths<Page>,
     ): Promise<PaginatedList<Translated<Page>>> {
-        return this.pagesService.findAll(ctx, args.options, relations)
+        return this.pagesService.findAll(ctx, args.sections, args.options, relations)
     }
 
     @Query()
@@ -55,5 +57,18 @@ export class PagesAdminResolver {
     @Allow(PagesPermission.Delete)
     async deletePage(@Ctx() ctx: RequestContext, @Args() { input }: MutationDeletePageArgs): Promise<boolean> {
         return this.pagesService.delete(ctx, input.id)
+    }
+
+    @Query()
+    @Allow(PagesPermission.Read)
+    async sections(@Ctx() ctx: RequestContext, @Args() args: QuerySectionsArgs): Promise<PaginatedList<PageSection>> {
+        return this.pagesService.findAllSections(ctx, args.options)
+    }
+
+    @Transaction()
+    @Mutation()
+    @Allow(PagesPermission.Delete)
+    async deleteSection(@Ctx() ctx: RequestContext, @Args() { input }: MutationDeletePageArgs): Promise<boolean> {
+        return this.pagesService.deleteSection(ctx, input.id)
     }
 }

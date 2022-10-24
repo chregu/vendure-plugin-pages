@@ -1,0 +1,20 @@
+<ng-select
+    [addTag]="addTagFn"
+    [multiple]="multiple"
+    [ngModel]="_value"
+    [clearable]="true"
+    [searchable]="true"
+    [disabled]="disabled"
+    [placeholder]="placeholder"
+    (change)="valueChanged($event)"
+>
+    <ng-template ng-label-tmp let-section="item" let-clear="clear">
+        <vdr-chip [colorFrom]="section" icon="close" (iconClick)="clear(section)"><clr-icon shape="tag" class="mr2"></clr-icon> {{ section }}</vdr-chip>
+    </ng-template>
+    <ng-option *ngFor="let section of allSections$ | async" [value]="section">
+        <vdr-chip [colorFrom]="section"><clr-icon shape="tag" class="mr2"></clr-icon> {{ section }}</vdr-chip>
+
+    </ng-option>
+    <!-- for some reason, this helped in showing the last value ... from https://stackoverflow.com/a/54654059 -->
+    <ng-option></ng-option>
+</ng-select>

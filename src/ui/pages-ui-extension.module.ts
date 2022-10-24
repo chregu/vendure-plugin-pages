@@ -14,9 +14,16 @@ import { Permission } from './generated/ui-types'
                     {
                         id: 'Pages',
                         label: 'Pages',
-                        routerLink: ['/extensions/pages'],
+                        routerLink: ['/extensions/pages/pages'],
                         // Icon can be any of https://clarity.design/icons
                         icon: 'book',
+                        requiresPermission: Permission.ReadPages,
+                    },
+                    {
+                        id: 'Sections',
+                        label: 'Sections',
+                        routerLink: ['/extensions/pages/sections'],
+                        icon: 'tag',
                         requiresPermission: Permission.ReadPages,
                     },
                 ],

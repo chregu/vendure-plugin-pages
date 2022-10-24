@@ -3,6 +3,7 @@ import {
     assertFound,
     LanguageCode,
     ListQueryBuilder,
+    ListQueryOptions,
     PaginatedList,
     RelationPaths,
     RequestContext,
@@ -16,6 +17,8 @@ import { CreatePageInput, PageListOptions, UpdatePageInput } from '../ui/generat
 import { Page } from '../entities/page.entity'
 import { PageTranslation } from '../entities/page-translation.entity'
 import { SelectQueryBuilder } from 'typeorm'
+import { PageSection } from '../entities/page-section.entity'
+import { unique } from '@vendure/common/lib/unique'
 
 @Injectable()
 export class PagesService {
@@ -28,12 +31,16 @@ export class PagesService {
 
     async findAll(
         ctx: RequestContext,
+        sections: string[] = [],
         options?: PageListOptions,
         relations?: RelationPaths<Page>,
     ): Promise<PaginatedList<Translated<Page>>> {
-        const qb = this.getQueryBuilder(options, ctx, relations)
-            .orderBy('page.section', 'ASC')
-            .addOrderBy('page.position', 'ASC')
+        const qb = this.getQueryBuilder(options, ctx, relations).addOrderBy('page.position', 'ASC')
+        if (sections.length > 0) {
+            qb.leftJoin('page.sections', 'sections')
+                .where(`sections.value IN (:...sections)`)
+                .setParameters({ sections })
+        }
         return this.getTranslatedQueryBuilderResponse(qb, ctx)
     }
 
@@ -58,20 +65,13 @@ export class PagesService {
         })
     }
 
-    findBySection(ctx: RequestContext, section: string, options?: PageListOptions, relations?: RelationPaths<Page>) {
+    findBySection(ctx: RequestContext, sections: string[], options?: PageListOptions, relations?: RelationPaths<Page>) {
         const qb = this.getQueryBuilder(options, ctx, relations)
 
-        const sectionWhere = section
-            .split(',') //don't allow empty section
-            .filter(s => s)
-            .map(s => ({
-                section: s,
-                enabled: true,
-            }))
-        if (sectionWhere.length === 0) {
-            return { items: [] }
-        }
-        qb.where(sectionWhere).orderBy('page.position', 'ASC')
+        qb.orderBy('page.position', 'ASC')
+            .leftJoin('page.sections', 'sections')
+            .where(`sections.value IN (:...sections)`)
+            .setParameters({ sections })
         return this.getTranslatedQueryBuilderResponse(qb, ctx)
     }
 
@@ -81,6 +81,11 @@ export class PagesService {
             input,
             entityType: Page,
             translationType: PageTranslation,
+            beforeSave: async page => {
+                if (input.sections) {
+                    page.sections = await this.valuesToSections(ctx, input.sections)
+                }
+            },
         })
         return assertFound(this.findOne(ctx, page.id))
     }
@@ -91,6 +96,11 @@ export class PagesService {
             input,
             entityType: Page,
             translationType: PageTranslation,
+            beforeSave: async page => {
+                if (input.sections) {
+                    page.sections = await this.valuesToSections(ctx, input.sections)
+                }
+            },
         })
 
         return assertFound(this.findOne(ctx, page.id))
@@ -101,6 +111,31 @@ export class PagesService {
         return !!(result?.affected && result?.affected > 0)
     }
 
+    async deleteSection(ctx: RequestContext, id: string | number): Promise<boolean> {
+        const section = await this.connection.getEntityOrThrow(ctx, PageSection, id)
+
+        await this.connection.getRepository(ctx, PageSection).remove(section)
+        return true
+    }
+
+    findAllSections(ctx: RequestContext, options?: ListQueryOptions<PageSection>): Promise<PaginatedList<PageSection>> {
+        return this.listQueryBuilder
+            .build(PageSection, options, { ctx })
+            .getManyAndCount()
+            .then(([items, totalItems]) => ({
+                items,
+                totalItems,
+            }))
+    }
+
+    async valuesToSections(ctx: RequestContext, values: string[]): Promise<PageSection[]> {
+        const tags: PageSection[] = []
+        for (const value of unique(values)) {
+            tags.push(await this.sectionValueToSection(ctx, value))
+        }
+        return tags
+    }
+
     private getQueryBuilder(
         options: PageListOptions | undefined,
         ctx: RequestContext,
@@ -108,7 +143,7 @@ export class PagesService {
     ) {
         return this.listQueryBuilder.build(Page, options || undefined, {
             ctx,
-            relations,
+            relations: [...(relations ?? []), 'sections'],
         })
     }
     private getTranslatedQueryBuilderResponse(qb: SelectQueryBuilder<Page>, ctx: RequestContext) {
@@ -119,5 +154,13 @@ export class PagesService {
                 totalItems,
             }
         })
+    }
+
+    private async sectionValueToSection(ctx: RequestContext, value: string): Promise<PageSection> {
+        const existing = await this.connection.getRepository(ctx, PageSection).findOne({ where: { value } })
+        if (existing) {
+            return existing
+        }
+        return await this.connection.getRepository(ctx, PageSection).save(new PageSection({ value }))
     }
 }

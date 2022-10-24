@@ -7,6 +7,8 @@ import { Observable } from 'rxjs'
 import { Page } from './generated/ui-types'
 import { map } from 'rxjs/operators'
 import { PageListComponent } from './page-list/page-list.component'
+import { TagSelectorComponent } from './tag-selector/tag-selector.component'
+import { SectionListComponent } from './section-list/section-list.component'
 
 export function pageDetailBreadcrumb(resolved: { entity: Observable<Page.Fragment> }) {
     return resolved.entity.pipe(
@@ -27,13 +29,20 @@ export function pageDetailBreadcrumb(resolved: { entity: Observable<Page.Fragmen
         SharedModule,
         RouterModule.forChild([
             {
-                path: '',
+                path: 'pages',
                 pathMatch: 'full',
                 component: PageListComponent,
                 data: { breadcrumb: 'Pages' },
             },
             {
-                path: ':id',
+                path: 'sections',
+                pathMatch: 'full',
+                component: SectionListComponent,
+                data: { breadcrumb: 'Sections' },
+            },
+
+            {
+                path: 'pages/:id',
                 component: PageDetailComponent,
                 resolve: { entity: PageDetailResolver },
                 canDeactivate: [CanDeactivateDetailGuard],
@@ -42,7 +51,7 @@ export function pageDetailBreadcrumb(resolved: { entity: Observable<Page.Fragmen
             },
         ]),
     ],
-    declarations: [PageDetailComponent, PageListComponent],
+    declarations: [PageDetailComponent, PageListComponent, TagSelectorComponent, SectionListComponent],
     providers: [PageDetailResolver],
 })
 export class PagesUiLazyModule {}

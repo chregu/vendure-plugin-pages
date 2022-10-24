@@ -9,11 +9,12 @@ import { PageTranslation } from './entities/page-translation.entity'
 import { PagesService } from './service/pages.service'
 import { PageResolver } from './api/page.resolver'
 import { PagesPermission } from './pages-permission'
+import { PageSection } from './entities/page-section.entity'
 
 @VendurePlugin({
     imports: [PluginCommonModule],
 
-    entities: [Page, PageTranslation],
+    entities: [Page, PageTranslation, PageSection],
     shopApiExtensions: {
         schema: shopApiExtensions,
         resolvers: [PagesShopResolver, PageResolver],

@@ -42,6 +42,7 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
             text: ['', Validators.required],
             title: ['', Validators.required],
             section: [''],
+            sections: [[]],
             position: ['', Validators.pattern(/^[0-9]+$/)],
         })
     }
@@ -50,6 +51,7 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
         this.init()
         this.page$ = this.entity$
     }
+
     ngOnDestroy(): void {
         this.destroy()
     }
@@ -60,7 +62,7 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
             slug: currentTranslation ? currentTranslation.slug : '',
             text: currentTranslation ? currentTranslation.text : '',
             title: currentTranslation ? currentTranslation.title : '',
-            section: entity.section,
+            sections: entity.sections?.map(t => t.value) || [],
             enabled: entity.enabled,
             position: entity.position || 1,
         })
@@ -92,7 +94,7 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
                             input: {
                                 ...pick(input, ['id', 'translations']),
                                 position: parseInt(formValue.position) || 1,
-                                section: formValue.section,
+                                sections: formValue.sections,
                                 enabled: formValue.enabled,
                             },
                         })
@@ -115,6 +117,7 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
                 },
             )
     }
+
     updateCode(currentCode: string, nameValue: string) {
         combineLatest(this.entity$, this.languageCode$)
             .pipe(take(1))
@@ -127,6 +130,7 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
                 }
             })
     }
+
     create() {
         if (!this.detailForm.dirty) {
             return
@@ -152,7 +156,7 @@ export class PageDetailComponent extends BaseDetailComponent<PageFragment> imple
                         input: {
                             ...pick(input, ['translations']),
                             position: parseInt(formValue.position) || 1,
-                            section: formValue.section,
+                            sections: formValue.sections,
                             enabled: formValue.enabled,
                         },
                     })

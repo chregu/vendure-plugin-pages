@@ -7,6 +7,7 @@
                     (languageCodeChange)="setLanguage($event)"
             ></vdr-language-selector>
             <form class="search-form" [formGroup]="searchForm">
+                <div class="flex start wrap">
                 <input
                         type="text"
                         formControlName="name"
@@ -19,12 +20,10 @@
                         placeholder="Search by slug"
                         class="clr-input search-input ml4"
                 />
-                <input
-                        type="text"
-                        formControlName="section"
-                        placeholder="Search by section"
-                        class="clr-input search-input ml4"
-                />
+
+                    <pages-tag-selector placeholder="Search by section" formControlName="section" [multiple]="false"></pages-tag-selector>
+                </div>
+
             </form>
         </div>
 
@@ -47,15 +46,17 @@
 >
     <vdr-dt-column>Title</vdr-dt-column>
     <vdr-dt-column>Slug</vdr-dt-column>
-    <vdr-dt-column>Section</vdr-dt-column>
-    <vdr-dt-column>Section position</vdr-dt-column>
+    <vdr-dt-column>Sections</vdr-dt-column>
+    <vdr-dt-column>Position</vdr-dt-column>
     <vdr-dt-column>Enabled</vdr-dt-column>
     <vdr-dt-column></vdr-dt-column>
 
     <ng-template let-page="item">
         <td class="left align-middle">{{ page.title }}</td>
         <td class="left align-middle">{{ page.slug}}</td>
-        <td class="left align-middle">{{ page.section}}</td>
+        <td class="left align-middle"> <vdr-chip *ngFor="let section of page.sections" [colorFrom]="section.value"
+        ><clr-icon shape="tag" class="mr2"></clr-icon> {{ section.value }}</vdr-chip
+        ></td>
         <td class="left align-middle">{{ page.position}}</td>
         <td class="left align-middle">
 
@@ -74,7 +75,7 @@
             <vdr-table-row-action
                     iconShape="edit"
                     [label]="'common.edit' | translate"
-                    [linkTo]="['/extensions', 'pages', page.id]"
+                    [linkTo]="['/extensions', 'pages','pages', page.id]"
             ></vdr-table-row-action>
 
             <vdr-dropdown>

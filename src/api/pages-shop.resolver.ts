@@ -28,6 +28,6 @@ export class PagesShopResolver {
         @Args() args: QueryPagesBySectionArgs,
         @Relations(Page) relations: RelationPaths<Page>,
     ) {
-        return this.pagesService.findBySection(ctx, args.section, args.options, relations)
+        return this.pagesService.findBySection(ctx, args.sections || [], args.options, relations)
     }
 }

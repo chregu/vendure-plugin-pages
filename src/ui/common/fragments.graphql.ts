@@ -7,7 +7,9 @@ export const PAGE_FRAGMENT = gql`
         updatedAt
         title
         slug
-        section
+        sections {
+            value
+        }
         position
         enabled
         translations {
@@ -17,5 +19,12 @@ export const PAGE_FRAGMENT = gql`
             languageCode
             title
         }
+    }
+`
+
+export const SECTION_FRAGMENT = gql`
+    fragment Section on Section {
+        id
+        value
     }
 `

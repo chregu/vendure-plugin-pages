@@ -715,9 +715,9 @@ export type CreateGroupOptionInput = {
 };
 
 export type CreatePageInput = {
-  section?: Maybe<Scalars['String']>;
   position?: Maybe<Scalars['Int']>;
   enabled?: Maybe<Scalars['Boolean']>;
+  sections?: Maybe<Array<Scalars['String']>>;
   translations?: Maybe<Array<PageTranslationInput>>;
 };
 
@@ -1384,6 +1384,10 @@ export type DeleteAssetsInput = {
 };
 
 export type DeletePageInput = {
+  id: Scalars['ID'];
+};
+
+export type DeleteSectionInput = {
   id: Scalars['ID'];
 };
 
@@ -2535,6 +2539,7 @@ export type Mutation = {
   updatePage: Page;
   createPage: Page;
   deletePage?: Maybe<Scalars['Boolean']>;
+  deleteSection?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -3106,6 +3111,11 @@ export type MutationDeletePageArgs = {
   input: DeletePageInput;
 };
 
+
+export type MutationDeleteSectionArgs = {
+  input: DeleteSectionInput;
+};
+
 export type NativeAuthInput = {
   username: Scalars['String'];
   password: Scalars['String'];
@@ -3475,7 +3485,7 @@ export type Page = Node & {
   title?: Maybe<Scalars['String']>;
   slug?: Maybe<Scalars['String']>;
   position?: Maybe<Scalars['String']>;
-  section?: Maybe<Scalars['String']>;
+  sections?: Maybe<Array<PageSection>>;
   enabled?: Maybe<Scalars['Boolean']>;
   translations: Array<PageTranslation>;
 };
@@ -3493,7 +3503,6 @@ export type PageFilterParameter = {
   title?: Maybe<StringOperators>;
   slug?: Maybe<StringOperators>;
   position?: Maybe<StringOperators>;
-  section?: Maybe<StringOperators>;
   enabled?: Maybe<BooleanOperators>;
 };
 
@@ -3516,6 +3525,11 @@ export type PageListOptions = {
   filterOperator?: Maybe<LogicalOperator>;
 };
 
+export type PageSection = {
+  __typename?: 'PageSection';
+  value: Scalars['String'];
+};
+
 export type PageSortParameter = {
   id?: Maybe<SortOrder>;
   createdAt?: Maybe<SortOrder>;
@@ -3524,7 +3538,6 @@ export type PageSortParameter = {
   title?: Maybe<SortOrder>;
   slug?: Maybe<SortOrder>;
   position?: Maybe<SortOrder>;
-  section?: Maybe<SortOrder>;
 };
 
 export type PageTranslation = {
@@ -4289,6 +4302,7 @@ export type Query = {
   zone?: Maybe<Zone>;
   pages: PageList;
   page?: Maybe<Page>;
+  sections: SectionList;
 };
 
 
@@ -4523,11 +4537,17 @@ export type QueryZoneArgs = {
 
 export type QueryPagesArgs = {
   options?: Maybe<PageListOptions>;
+  sections?: Maybe<Array<Scalars['String']>>;
 };
 
 
 export type QueryPageArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QuerySectionsArgs = {
+  options?: Maybe<SectionListOptions>;
 };
 
 export type Refund = Node & {
@@ -4763,6 +4783,41 @@ export type SearchResultPrice = PriceRange | SinglePrice;
 export type SearchResultSortParameter = {
   name?: Maybe<SortOrder>;
   price?: Maybe<SortOrder>;
+};
+
+export type Section = Node & {
+  __typename?: 'Section';
+  id: Scalars['ID'];
+  value: Scalars['String'];
+};
+
+export type SectionFilterParameter = {
+  id?: Maybe<IDOperators>;
+  value?: Maybe<StringOperators>;
+};
+
+export type SectionList = PaginatedList & {
+  __typename?: 'SectionList';
+  items: Array<Section>;
+  totalItems: Scalars['Int'];
+};
+
+export type SectionListOptions = {
+  /** Skips the first n results, for use in pagination */
+  skip?: Maybe<Scalars['Int']>;
+  /** Takes n results, for use in pagination */
+  take?: Maybe<Scalars['Int']>;
+  /** Specifies which properties to sort the results by */
+  sort?: Maybe<SectionSortParameter>;
+  /** Allows the results to be filtered */
+  filter?: Maybe<SectionFilterParameter>;
+  /** Specifies whether multiple "filter" arguments should be combines with a logical AND or OR operation. Defaults to AND. */
+  filterOperator?: Maybe<LogicalOperator>;
+};
+
+export type SectionSortParameter = {
+  id?: Maybe<SortOrder>;
+  value?: Maybe<SortOrder>;
 };
 
 export type ServerConfig = {
@@ -5319,7 +5374,7 @@ export type UpdateOrderNoteInput = {
 
 export type UpdatePageInput = {
   id: Scalars['ID'];
-  section?: Maybe<Scalars['String']>;
+  sections?: Maybe<Array<Scalars['String']>>;
   position?: Maybe<Scalars['Int']>;
   enabled?: Maybe<Scalars['Boolean']>;
   translations?: Maybe<Array<PageTranslationInput>>;
@@ -5465,7 +5520,12 @@ export type Zone = Node & {
 
 export namespace Page {
   export type Fragment = PageFragment;
+  export type Sections = NonNullable<(NonNullable<PageFragment['sections']>)[number]>;
   export type Translations = NonNullable<(NonNullable<PageFragment['translations']>)[number]>;
+}
+
+export namespace Section {
+  export type Fragment = SectionFragment;
 }
 
 export namespace UpdatePage {
@@ -5498,13 +5558,40 @@ export namespace GetPage {
   export type Page = (NonNullable<GetPageQuery['page']>);
 }
 
+export namespace GetSections {
+  export type Variables = GetSectionsQueryVariables;
+  export type Query = GetSectionsQuery;
+  export type Sections = (NonNullable<GetSectionsQuery['sections']>);
+  export type Items = NonNullable<(NonNullable<(NonNullable<GetSectionsQuery['sections']>)['items']>)[number]>;
+}
+
+export namespace DeleteSection {
+  export type Variables = DeleteSectionMutationVariables;
+  export type Mutation = DeleteSectionMutation;
+}
+
+export namespace GetSectionsList {
+  export type Variables = GetSectionsListQueryVariables;
+  export type Query = GetSectionsListQuery;
+  export type Sections = (NonNullable<GetSectionsListQuery['sections']>);
+  export type Items = NonNullable<(NonNullable<(NonNullable<GetSectionsListQuery['sections']>)['items']>)[number]>;
+}
+
 export type PageFragment = (
   { __typename?: 'Page' }
-  & Pick<Page, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'slug' | 'section' | 'position' | 'enabled'>
-  & { translations: Array<(
+  & Pick<Page, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'slug' | 'position' | 'enabled'>
+  & { sections?: Maybe<Array<(
+    { __typename?: 'PageSection' }
+    & Pick<PageSection, 'value'>
+  )>>, translations: Array<(
     { __typename?: 'PageTranslation' }
     & Pick<PageTranslation, 'id' | 'slug' | 'text' | 'languageCode' | 'title'>
   )> }
+);
+
+export type SectionFragment = (
+  { __typename?: 'Section' }
+  & Pick<Section, 'id' | 'value'>
 );
 
 export type UpdatePageMutationVariables = Exact<{
@@ -5535,6 +5622,7 @@ export type CreatePageMutation = (
 
 export type GetPagesQueryVariables = Exact<{
   options?: Maybe<PageListOptions>;
+  sections?: Maybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 
@@ -5571,4 +5659,48 @@ export type GetPageQuery = (
     { __typename?: 'Page' }
     & PageFragment
   )> }
+);
+
+export type GetSectionsQueryVariables = Exact<{
+  options?: Maybe<SectionListOptions>;
+}>;
+
+
+export type GetSectionsQuery = (
+  { __typename?: 'Query' }
+  & { sections: (
+    { __typename?: 'SectionList' }
+    & Pick<SectionList, 'totalItems'>
+    & { items: Array<(
+      { __typename?: 'Section' }
+      & SectionFragment
+    )> }
+  ) }
+);
+
+export type DeleteSectionMutationVariables = Exact<{
+  input: DeleteSectionInput;
+}>;
+
+
+export type DeleteSectionMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteSection'>
+);
+
+export type GetSectionsListQueryVariables = Exact<{
+  options?: Maybe<SectionListOptions>;
+}>;
+
+
+export type GetSectionsListQuery = (
+  { __typename?: 'Query' }
+  & { sections: (
+    { __typename?: 'SectionList' }
+    & Pick<SectionList, 'totalItems'>
+    & { items: Array<(
+      { __typename?: 'Section' }
+      & Pick<Section, 'value'>
+    )> }
+  ) }
 );
