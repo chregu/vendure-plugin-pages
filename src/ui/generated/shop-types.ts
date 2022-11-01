@@ -875,6 +875,7 @@ export enum ErrorCode {
   COUPON_CODE_LIMIT_ERROR = 'COUPON_CODE_LIMIT_ERROR',
   ORDER_MODIFICATION_ERROR = 'ORDER_MODIFICATION_ERROR',
   INELIGIBLE_SHIPPING_METHOD_ERROR = 'INELIGIBLE_SHIPPING_METHOD_ERROR',
+  NO_ACTIVE_ORDER_ERROR = 'NO_ACTIVE_ORDER_ERROR',
   ORDER_PAYMENT_STATE_ERROR = 'ORDER_PAYMENT_STATE_ERROR',
   INELIGIBLE_PAYMENT_METHOD_ERROR = 'INELIGIBLE_PAYMENT_METHOD_ERROR',
   PAYMENT_FAILED_ERROR = 'PAYMENT_FAILED_ERROR',
@@ -889,8 +890,7 @@ export enum ErrorCode {
   IDENTIFIER_CHANGE_TOKEN_EXPIRED_ERROR = 'IDENTIFIER_CHANGE_TOKEN_EXPIRED_ERROR',
   PASSWORD_RESET_TOKEN_INVALID_ERROR = 'PASSWORD_RESET_TOKEN_INVALID_ERROR',
   PASSWORD_RESET_TOKEN_EXPIRED_ERROR = 'PASSWORD_RESET_TOKEN_EXPIRED_ERROR',
-  NOT_VERIFIED_ERROR = 'NOT_VERIFIED_ERROR',
-  NO_ACTIVE_ORDER_ERROR = 'NO_ACTIVE_ORDER_ERROR'
+  NOT_VERIFIED_ERROR = 'NOT_VERIFIED_ERROR'
 }
 
 export type ErrorResult = {
@@ -2792,7 +2792,7 @@ export type Query = {
   /** Search Products based on the criteria set by the `SearchInput` */
   search: SearchResponse;
   page?: Maybe<Page>;
-  /** Return a page by its slug. languageCode is needed, independent of the general languageCode setting */
+  /** Return a page by its slug. languageCode is deprecated, the general languageCode setting is used */
   pageBySlug?: Maybe<Page>;
   /**
    * Returns all pages matching a section ordered by their position.
@@ -2857,7 +2857,7 @@ export type QueryPageArgs = {
 
 export type QueryPageBySlugArgs = {
   slug: Scalars['String'];
-  languageCode: LanguageCode;
+  languageCode?: Maybe<LanguageCode>;
 };
 
 

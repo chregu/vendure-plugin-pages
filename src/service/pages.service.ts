@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import {
     assertFound,
+    EntityNotFoundError,
     LanguageCode,
     ListQueryBuilder,
     ListQueryOptions,
@@ -55,14 +56,32 @@ export class PagesService {
             .then(page => page && this.translator.translate(page, ctx))
     }
 
-    async findBySlugAndLanguage(
-        ctx: RequestContext,
-        slug: string,
-        languageCode: LanguageCode,
-    ): Promise<PageTranslation | undefined> {
-        return this.connection.getRepository(ctx, PageTranslation).findOne({
-            where: { languageCode: languageCode, slug: slug },
-        })
+    async findBySlug(ctx: RequestContext, slug: string, relations?: RelationPaths<Page>): Promise<Page | undefined> {
+        // query is from ProductService.findOneBySlug
+        const qb = this.connection.getRepository(ctx, Page).createQueryBuilder('page')
+        const translationQb = this.connection
+            .getRepository(ctx, PageTranslation)
+            .createQueryBuilder('_page_translation')
+            .select('_page_translation.baseId')
+            .andWhere('_page_translation.slug = :slug', { slug })
+
+        qb.leftJoin('page.translations', 'translation')
+            .andWhere('page.id IN (' + translationQb.getQuery() + ')')
+            .setParameters(translationQb.getParameters())
+            .select('page.id', 'id')
+            .addSelect(
+                // tslint:disable-next-line:max-line-length
+                `CASE translation.languageCode WHEN '${ctx.languageCode}' THEN 2 WHEN '${ctx.channel.defaultLanguageCode}' THEN 1 ELSE 0 END`,
+                'sort_order',
+            )
+            .orderBy('sort_order', 'DESC')
+
+        const result = await qb.getRawOne()
+        if (!result) {
+            throw new EntityNotFoundError('Page', slug)
+        }
+
+        return this.findOne(ctx, result.id, relations)
     }
 
     findBySection(ctx: RequestContext, sections: string[], options?: PageListOptions, relations?: RelationPaths<Page>) {

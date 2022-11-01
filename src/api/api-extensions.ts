@@ -103,9 +103,12 @@ export const shopApiExtensions = gql`
     extend type Query {
         page(id: ID!): Page
         """
-        Return a page by its slug. languageCode is needed, independent of the general languageCode setting
+        Return a page by its slug. languageCode is deprecated, the general languageCode setting is used
         """
-        pageBySlug(slug: String!, languageCode: LanguageCode!): Page
+        pageBySlug(
+            slug: String!
+            languageCode: LanguageCode @deprecated(reason: "languageCode is deprecated and not used anymore")
+        ): Page
         """
         Returns all pages matching a section ordered by their position.
         Separate by comma for multiple sections.

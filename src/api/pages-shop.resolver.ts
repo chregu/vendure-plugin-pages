@@ -18,8 +18,12 @@ export class PagesShopResolver {
         return this.pagesService.findOne(ctx, args.id, relations)
     }
     @Query()
-    async pageBySlug(@Ctx() ctx: RequestContext, @Args() args: QueryPageBySlugArgs) {
-        return this.pagesService.findBySlugAndLanguage(ctx, args.slug, args.languageCode)
+    async pageBySlug(
+        @Ctx() ctx: RequestContext,
+        @Args() args: QueryPageBySlugArgs,
+        @Relations(Page) relations: RelationPaths<Page>,
+    ) {
+        return this.pagesService.findBySlug(ctx, args.slug, relations)
     }
 
     @Query()
